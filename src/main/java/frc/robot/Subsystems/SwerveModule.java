@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -40,7 +41,7 @@ public class SwerveModule extends SubsystemBase{
     final double STEER_VELOCITY_CONVERSION = STEER_POSITION_CONVERSION / 60.0;
     private final SlewRateLimiter steerLimiter = new SlewRateLimiter(Constants.Drivetrain.SteerMotorSlewRate);
 
-    public SwerveModule(int driveMotorID, int steerMotorID, int encoderID){
+    public SwerveModule(int driveMotorID, int steerMotorID, int encoderID, boolean invertDirection){
         this.driveMotorID = driveMotorID;
         this.encoderID = encoderID;
 
@@ -50,6 +51,9 @@ public class SwerveModule extends SubsystemBase{
         driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         driveMotorConfig.CurrentLimits.SupplyCurrentLimit = 40;
+        if (invertDirection) {
+            driveMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        }
         driveMotor.getConfigurator().apply(driveMotorConfig);
 
         //steer motor
