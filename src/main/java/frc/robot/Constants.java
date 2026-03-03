@@ -9,10 +9,10 @@ public class Constants {
     
     // 25.25 inches wide, 18.16 inches deep
     public static final Translation2d[] moduleLocations = {
-        new Translation2d(-0.320675, 0.230505),  //front right +-
-        new Translation2d(-0.320675, -0.230505), //front left ++
-        new Translation2d(0.320675, -0.230505),  //rear left -+
-        new Translation2d(0.320675, 0.230505)  //rear right --
+        new Translation2d(0.230505, -0.320675),  //front right +-
+        new Translation2d(0.230505, 0.320675), //front left ++
+        new Translation2d(-0.230505, 0.320675),  //rear left -+
+        new Translation2d(-0.230505, -0.320675)  //rear right --
     };
 
     //velocity constranints for swerve desaturate
@@ -38,10 +38,10 @@ public class Constants {
         public static final int RearRightDriveID   = 10, RearRightSteerID   = 11, RearRightEncoderID = 12;
 
         SwerveModule[] moduleArray = new SwerveModule[] {
-            new SwerveModule(FrontRightDriveID,FrontRightSteerID,FrontRightEncoderID),
-            new SwerveModule(FrontLeftDriveID, FrontLeftSteerID, FrontLeftEncoderID),
-            new SwerveModule(RearLeftDriveID, RearLeftSteerID, RearLeftEncoderID),
-            new SwerveModule(RearRightDriveID, RearRightSteerID, RearRightEncoderID)
+            new SwerveModule(FrontRightDriveID,FrontRightSteerID,FrontRightEncoderID, true),
+            new SwerveModule(FrontLeftDriveID, FrontLeftSteerID, FrontLeftEncoderID, false),
+            new SwerveModule(RearLeftDriveID, RearLeftSteerID, RearLeftEncoderID, false),
+            new SwerveModule(RearRightDriveID, RearRightSteerID, RearRightEncoderID, true)
         };
         
     }
@@ -67,7 +67,7 @@ public class Constants {
         public static final double SlowFactor = 3;
         public static final double SlowFactorOffset = 1;
 
-        public static final double SteerMotorSlewRate = 100;
+        public static final double SteerMotorSlewRate = 20;
     }
 
     public interface Motion {
