@@ -49,8 +49,9 @@ public class DriveFieldRelative extends Command {
         y = (y > 0) ? Math.abs(Math.pow(y, translationPow)) : -Math.abs(Math.pow(y, translationPow));
         theta = (theta > 0) ? Math.abs(Math.pow(theta, rotationPow)) : -Math.abs(Math.pow(theta, rotationPow));
 
-        double slowModeFactor = (controller.getLeftTriggerAxis() * Constants.Drivetrain.SlowFactor) + Constants.Drivetrain.SlowFactorOffset;
-        boolean isCosineCompensated = controller.getRightTriggerAxis() >= 0.5;
+    double slowModeFactor = (controller.getLeftTriggerAxis() * Constants.Drivetrain.SlowFactor) + Constants.Drivetrain.SlowFactorOffset;
+    // boolean isCosineCompensated = controller.getRightTriggerAxis() >= 0.5;
+    boolean isCosineCompensated = true;
 
         swerve.driveFieldRelative(
         new ChassisSpeeds(
