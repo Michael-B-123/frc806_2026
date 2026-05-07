@@ -88,6 +88,8 @@ public class Constants {
         public static final double DriveMotorsHighSupplyCurrentSeconds = 1;
 
         public static final double SteerMotorsSupplyCurrentLimit = 20;
+
+        public static final double PIDDutyCycleToVoltageConversionFactor = 12.5;
     }
 
     public interface Indexer {

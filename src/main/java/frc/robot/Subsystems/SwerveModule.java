@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -70,7 +71,7 @@ public class SwerveModule extends SubsystemBase{
         SwerveRotationName = "Swerve " + encoderID + " rotation";
 
         //drive motor 
-        driveMotor = new TalonFX(driveMotorID);
+        driveMotor = new TalonFX(driveMotorID, new CANBus("*"));
         var driveMotorConfig = new TalonFXConfiguration();
         driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -83,16 +84,16 @@ public class SwerveModule extends SubsystemBase{
         driveMotor.setPosition(0);
 
         //steer motor
-        steerMotor = new TalonFX(steerMotorID);
+        steerMotor = new TalonFX(steerMotorID, new CANBus("*"));
         steerRequest = new PositionVoltage(0);
         var steerMotorConfig = new TalonFXConfiguration();
         steerMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         steerMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         steerMotorConfig.CurrentLimits.SupplyCurrentLimit = Constants.Drivetrain.SteerMotorsSupplyCurrentLimit;
         var s0 = steerMotorConfig.Slot0;
-        s0.kP = Constants.Drivetrain.SteerDriveKP * 12.5;
-        s0.kI = Constants.Drivetrain.SteerDriveKI * 12.5;
-        s0.kD = Constants.Drivetrain.SteerDriveKD * 12.5;
+        s0.kP = Constants.Drivetrain.SteerDriveKP * Constants.Drivetrain.PIDDutyCycleToVoltageConversionFactor;
+        s0.kI = Constants.Drivetrain.SteerDriveKI * Constants.Drivetrain.PIDDutyCycleToVoltageConversionFactor;
+        s0.kD = Constants.Drivetrain.SteerDriveKD * Constants.Drivetrain.PIDDutyCycleToVoltageConversionFactor;
         steerMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
         steerMotorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
         steerMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
