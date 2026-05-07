@@ -7,6 +7,8 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -42,7 +44,6 @@ public class SwerveModule extends SubsystemBase{
     final double DRIVE_VELOCITY_CONVERSION = DRIVE_POSITION_CONVERSION / 60.0;
     final double STEER_POSITION_CONVERSION = 1;
     final double STEER_VELOCITY_CONVERSION = STEER_POSITION_CONVERSION / 60.0;
-    private final SlewRateLimiter steerLimiter = new SlewRateLimiter(Constants.Drivetrain.SteerMotorSlewRate);
 
     final Alert SwerveDriveMotorAlert;
     final Alert SwerveSteerMotorAlert;
@@ -52,6 +53,8 @@ public class SwerveModule extends SubsystemBase{
     final String SwerveSpeedMPSName;
     final String SwerveSpeedDutyCycleName;
     final String SwerveRotationName;
+
+    final PositionVoltage steerRequest;
 
     public SwerveModule(int driveMotorID, int steerMotorID, int encoderID){
         this.driveMotorID = driveMotorID;
@@ -81,10 +84,18 @@ public class SwerveModule extends SubsystemBase{
 
         //steer motor
         steerMotor = new TalonFX(steerMotorID);
+        steerRequest = new PositionVoltage(0);
         var steerMotorConfig = new TalonFXConfiguration();
         steerMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         steerMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         steerMotorConfig.CurrentLimits.SupplyCurrentLimit = Constants.Drivetrain.SteerMotorsSupplyCurrentLimit;
+        var s0 = steerMotorConfig.Slot0;
+        s0.kP = Constants.Drivetrain.SteerDriveKP * 12.5;
+        s0.kI = Constants.Drivetrain.SteerDriveKI * 12.5;
+        s0.kD = Constants.Drivetrain.SteerDriveKD * 12.5;
+        steerMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
+        steerMotorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
+        steerMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         steerMotor.getConfigurator().apply(steerMotorConfig);
         
         // module encoder
@@ -99,20 +110,11 @@ public class SwerveModule extends SubsystemBase{
         //driveController.setP(Constants.Modules.SpeedKP);
         //driveController.setI(Constants.Modules.SpeedKI);
         //driveController.setD(Constants.Modules.SpeedKD);
-
-        steerController = new PIDController(Constants.Drivetrain.SteerDriveKP, Constants.Drivetrain.SteerDriveKI, Constants.Drivetrain.SteerDriveKD);
-        steerController.enableContinuousInput(-0.5, 0.5);
     }
 
     public void setTargetState(SwerveModuleState targetState) {
-        //PID experement
-        //steerMotor.set(-steerController.calculate(getModuleAngRotations(),targetState.angle.getRotations()));
-        //driveController.setReference(targetState.speedMetersPerSecond / DRIVE_VELOCITY_CONVERSION, ControlType.kVelocity);
-
         double currentAngle = getModuleAngRotations();
-        // TODO: steer PID on motor controller with external cancoder sensor
-        double steerMotorCommand = steerController.calculate(currentAngle, targetState.angle.getRotations());
-        steerMotor.set(steerLimiter.calculate(steerMotorCommand));
+        steerMotor.setControl(steerRequest.withPosition(targetState.angle.getRotations()));
         // Cosine compensation: drive wheel slower when it's not rotated to the correct position yet
         targetState.speedMetersPerSecond *= targetState.angle.minus(new Rotation2d(currentAngle*2*Math.PI)).getCos();
         SmartDashboard.putNumber(SwerveSpeedMPSName, targetState.speedMetersPerSecond);
