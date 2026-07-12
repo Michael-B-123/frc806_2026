@@ -32,36 +32,36 @@ public class RobotContainer {
     
     public final Indexer indexer = new Indexer(Constants.Indexer.TopRollerID);
     public final Shooter shooter = new Shooter(Constants.Shooter.MotorID);
-    public final Intake intake = new Intake(Constants.Intake.RollerID);
-    public final Arm arm = new Arm(Constants.Arm.ArmLeaderID, Constants.Arm.ArmFollowerID);
+    // public final Intake intake = new Intake(Constants.Intake.RollerID);
+    // public final Arm arm = new Arm(Constants.Arm.ArmLeaderID, Constants.Arm.ArmFollowerID);
 
-    public final Blinkin blinkin = new Blinkin(0, Constants.Blinkin.SolidColors.WHITE.value, arm, indexer);
+    // public final Blinkin blinkin = new Blinkin(0, Constants.Blinkin.SolidColors.WHITE.value, arm, indexer);
 
     public RobotContainer() {
         configureBindings();
-        configureNamedCommands();
+        // configureNamedCommands();
 
         SmartDashboard.putData(CommandScheduler.getInstance());
     }
 
     private void configureBindings() {
         driveRightTrigger.whileTrue(indexer.index());
-        drivekRightBumper.toggleOnTrue(arm.top());
-        drivekLeftBumper.whileTrue(arm.bump());
+        // drivekRightBumper.toggleOnTrue(arm.top());
+        // drivekLeftBumper.whileTrue(arm.bump());
     }
 
-    private void configureNamedCommands() {
-        NamedCommands.registerCommand("Index", indexer.index());
-        NamedCommands.registerCommand("Stop Indexer", indexer.stop());
-        NamedCommands.registerCommand("Shoot", shooter.shoot());
-        NamedCommands.registerCommand("Stop Shooter", shooter.stop());
-        NamedCommands.registerCommand("Intake", intake.intake());
-        NamedCommands.registerCommand("Discharge", intake.discharge());
-        NamedCommands.registerCommand("Stop Intake", indexer.stop());
-        NamedCommands.registerCommand("Deploy arm", arm.deploy());
-        NamedCommands.registerCommand("Bump arm", arm.bump());
-        NamedCommands.registerCommand("Top arm", arm.top());
-    }
+    // private void configureNamedCommands() {
+    //     NamedCommands.registerCommand("Index", indexer.index());
+    //     NamedCommands.registerCommand("Stop Indexer", indexer.stop());
+    //     NamedCommands.registerCommand("Shoot", shooter.shoot());
+    //     NamedCommands.registerCommand("Stop Shooter", shooter.stop());
+    //     NamedCommands.registerCommand("Intake", intake.intake());
+    //     NamedCommands.registerCommand("Discharge", intake.discharge());
+    //     NamedCommands.registerCommand("Stop Intake", indexer.stop());
+    //     NamedCommands.registerCommand("Deploy arm", arm.deploy());
+    //     NamedCommands.registerCommand("Bump arm", arm.bump());
+    //     NamedCommands.registerCommand("Top arm", arm.top());
+    // }
 
     public Command getAutonomousCommand() {
         String blankAuto = "";
