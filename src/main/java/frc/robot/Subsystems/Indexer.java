@@ -29,7 +29,7 @@ public class Indexer extends SubsystemBase {
 
         SmartDashboard.putData("Indexer subsystem", this);
 
-        setDefaultCommand(idleIndex());
+        setDefaultCommand(stop());
     }
 
     public Command idleIndex() {
