@@ -41,6 +41,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class Drivetrain extends SubsystemBase {
     Pigeon2 IMU;
@@ -84,6 +85,17 @@ public class Drivetrain extends SubsystemBase {
         hasRecievedVisionMeasurement = false;
 
         SmartDashboard.putData("Field", field);
+
+        // Logging callback for target robot pose
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+            field.getObject("target pose").setPose(pose);
+        });
+
+        // Logging callback for the active path, this is sent as a list of poses
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {
+            field.getObject("path").setPoses(poses);
+        });
+
         SmartDashboard.putData(calibrate());
         SmartDashboard.putData(this);
 
