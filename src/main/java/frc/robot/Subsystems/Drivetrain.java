@@ -131,6 +131,7 @@ public class Drivetrain extends SubsystemBase {
                 visionEstimate.ifPresent(e -> {
                     var targets = e.targetsUsed;
                     Pose2d estPose = e.estimatedPose.toPose2d();
+                    field.getObject("vision pose").setPose(estPose);
                     
                     if ((targets.size() == 1 && targets.get(0).getPoseAmbiguity() > 0.2) ||
                             targets.size() == 0) {
@@ -159,6 +160,7 @@ public class Drivetrain extends SubsystemBase {
 
                     Matrix<N3, N1> stdDevs = getStdDevs(e, targets);
                     poseEstimator.addVisionMeasurement(estPose, e.timestampSeconds, stdDevs);
+                    field.getObject("good vision pose").setPose(estPose);
 
                     double lag = Timer.getFPGATimestamp() - e.timestampSeconds;
                     SmartDashboard.putNumber("Vision/MeasurementLag_s", lag);
