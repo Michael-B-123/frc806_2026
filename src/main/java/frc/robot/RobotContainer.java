@@ -10,11 +10,13 @@ import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Subsystems.Drivetrain;
 import frc.robot.Subsystems.Indexer;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Intake;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Blinkin;
@@ -37,9 +39,14 @@ public class RobotContainer {
 
     public final Blinkin blinkin = new Blinkin(0, Constants.Blinkin.SolidColors.WHITE.value, arm, indexer);
 
+    private final SendableChooser<Command> autoChooser;
+
     public RobotContainer() {
         configureBindings();
         configureNamedCommands();
+
+        autoChooser = AutoBuilder.buildAutoChooser("Nothing");
+        SmartDashboard.putData("Auto chooser", autoChooser);
 
         SmartDashboard.putData(CommandScheduler.getInstance());
     }
@@ -57,26 +64,13 @@ public class RobotContainer {
         NamedCommands.registerCommand("Stop Shooter", shooter.stop());
         NamedCommands.registerCommand("Intake", intake.intake());
         NamedCommands.registerCommand("Discharge", intake.discharge());
-        NamedCommands.registerCommand("Stop Intake", indexer.stop());
+        NamedCommands.registerCommand("Stop Intake", intake.stop());
         NamedCommands.registerCommand("Deploy arm", arm.deploy());
         NamedCommands.registerCommand("Bump arm", arm.bump());
         NamedCommands.registerCommand("Top arm", arm.top());
     }
 
     public Command getAutonomousCommand() {
-        String blankAuto = "";
-        String auto1 = "Back_shoot";
-        String auto2 = "Back_shoot_reload_shoot";
-        String auto3 = "Back_shoot_leftmid_shoot";
-        String auto4 = "Back_shoot_rightmid_shoot";
-    
-        String autoName = blankAuto;
-
-        try {
-            return new PathPlannerAuto(autoName);
-        } catch (Exception e) {
-            System.err.println("ERROR: Failed to load auto " + autoName + ": " + e.getMessage());
-            return edu.wpi.first.wpilibj2.command.Commands.none();
-        }
+        return autoChooser.getSelected();
     }
 }
