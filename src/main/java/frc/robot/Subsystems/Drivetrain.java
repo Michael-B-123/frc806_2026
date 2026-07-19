@@ -40,6 +40,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class Drivetrain extends SubsystemBase {
     Pigeon2 IMU;
@@ -77,6 +78,17 @@ public class Drivetrain extends SubsystemBase {
         hasRecievedVisionMeasurement = false;
 
         SmartDashboard.putData("Field", field);
+
+        // Logging callback for target robot pose
+        PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+            field.getObject("target pose").setPose(pose);
+        });
+
+        // Logging callback for the active path, this is sent as a list of poses
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {
+            field.getObject("path").setPoses(poses);
+        });
+
         SmartDashboard.putData(calibrate());
         SmartDashboard.putData(this);
 
@@ -120,6 +132,7 @@ public class Drivetrain extends SubsystemBase {
             visionEstimate.ifPresent(e -> {
                 var targets = e.targetsUsed;
                 Pose2d estPose = e.estimatedPose.toPose2d();
+                field.getObject("vision pose").setPose(estPose);
                 
                 if ((targets.size() == 1 && targets.get(0).getPoseAmbiguity() > 0.2) ||
                         targets.size() == 0) {
@@ -143,6 +156,7 @@ public class Drivetrain extends SubsystemBase {
 
                 Matrix<N3, N1> stdDevs = getStdDevs(e, targets);
                 poseEstimator.addVisionMeasurement(estPose, e.timestampSeconds, stdDevs);
+                field.getObject("good vision pose").setPose(estPose);
 
                 double lag = Timer.getFPGATimestamp() - e.timestampSeconds;
                 SmartDashboard.putNumber("Vision/MeasurementLag_s", lag);
