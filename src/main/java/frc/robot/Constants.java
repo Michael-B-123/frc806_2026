@@ -79,7 +79,7 @@ public class Constants {
         public static final double SlowFactor = 3;
         public static final double SlowFactorOffset = 1;
 
-        public static final double SteerMotorSlewRate = 20;
+        public static final double SteerMotorSlewRate = 20 * DutyCycleToVoltage;
         
         public static final double DriveMotorsLowSupplyCurrentLimit = 40;
         public static final double DriveMotorsHighSupplyCurrentLimit = 60;
