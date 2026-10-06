@@ -55,7 +55,8 @@ public class Constants {
 
         public static final double SpeedKP = 5, SpeedKI = 0, SpeedKD = 0;
         public static final double SteerKP = 1.5, SteerKI = 0, SteerKD = 0;
-        public static final double SteerDriveKP = 1.5, SteerDriveKI = 0, SteerDriveKD = 0;
+        public static final double DutyCycleToVoltage = 12.0;
+        public static final double SteerDriveKP = 1.5 * DutyCycleToVoltage, SteerDriveKI = 0, SteerDriveKD = 0;
         
         public static final int FrontLeftDriveID   = 4, FrontLeftSteerID   = 5, FrontLeftEncoderID = 6;
 
@@ -78,7 +79,7 @@ public class Constants {
         public static final double SlowFactor = 3;
         public static final double SlowFactorOffset = 1;
 
-        public static final double SteerMotorSlewRate = 20;
+        public static final double SteerMotorSlewRate = 20 * DutyCycleToVoltage;
         
         public static final double DriveMotorsLowSupplyCurrentLimit = 40;
         public static final double DriveMotorsHighSupplyCurrentLimit = 60;
