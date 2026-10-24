@@ -1,9 +1,10 @@
 {
   "image": "mcr.microsoft.com/devcontainers/java:1-17",
+  "onCreateCommand": "sudo wget -q -O /opt/vscode-wpilib.vsix https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2026.2.1/vscode-wpilib-2026.2.1.vsix",
   "customizations": {
     "vscode": {
       "extensions": [
-        "wpilibsuite.vscode-wpilib@2026.2.1",
+        "/opt/vscode-wpilib.vsix",
         "vscjava.vscode-java-pack",
         "vscjava.vscode-gradle"
       ],
