@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
-import frc.robot.Commands.ArmIndexerState;
-import frc.robot.Commands.ArmState;
-import frc.robot.Commands.IndexerState;
+import frc.robot.Commands.LEDStateCommands.ArmIndexerState;
+import frc.robot.Commands.LEDStateCommands.ArmState;
+import frc.robot.Commands.LEDStateCommands.IndexerState;
 
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Indexer;

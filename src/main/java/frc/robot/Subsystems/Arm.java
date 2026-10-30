@@ -23,6 +23,7 @@ public class Arm extends SubsystemBase {
     private final TalonFX armLeader;
     private final TalonFX armFollower;
     private final CANcoder armEncoder;
+    private final MotionMagicVoltage request = new MotionMagicVoltage(0);
     private Constants.Arm.States armTargetState;
 
     @SuppressWarnings("removal")
@@ -77,7 +78,6 @@ public class Arm extends SubsystemBase {
 
     public Command deploy() {
         return runEnd(() -> {
-            final MotionMagicVoltage request = new MotionMagicVoltage(0);
             armLeader.setControl(request.withPosition(Constants.Arm.ArmDeployPos));
             armTargetState = Constants.Arm.States.Deployed;
         }, () -> {}).withName("Deploy");
@@ -86,7 +86,6 @@ public class Arm extends SubsystemBase {
 
     public Command bump() {
         return runEnd(() -> {
-            final MotionMagicVoltage request = new MotionMagicVoltage(0);
             armLeader.setControl(request.withPosition(Constants.Arm.ArmVerticalPos));
             armTargetState = Constants.Arm.States.Vertical;
         }, () -> {}).withName("Bump");
@@ -95,7 +94,6 @@ public class Arm extends SubsystemBase {
 
     public Command top() {
         return runEnd(() -> {
-            final MotionMagicVoltage request = new MotionMagicVoltage(0);
             armLeader.setControl(request.withPosition(Constants.Arm.ArmBackPos));
             armTargetState = Constants.Arm.States.Back;
         }, () -> {}).withName("Top");
